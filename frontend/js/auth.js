@@ -1,8 +1,8 @@
 // Usuarios de prueba (en Fase 4 esto vendrá de Supabase)
 const USERS = [
-  { email: 'admin@gmail.com',   password: 'admin123',   role: 'admin',    name: 'Administrador' },
-  { email: 'ventas@gmail.com',  password: 'ventas123',  role: 'vendedor', name: 'Vendedor'      },
-  { email: 'bodega@gmail.com',  password: 'bodega123',  role: 'bodega',   name: 'Bodega'        },
+  { email: 'admin@tumomito.bo',   password: 'admin123',   role: 'admin',    name: 'Administrador' },
+  { email: 'ventas@tumomito.bo',  password: 'ventas123',  role: 'vendedor', name: 'Vendedor'      },
+  { email: 'bodega@tumomito.bo',  password: 'bodega123',  role: 'bodega',   name: 'Bodega'        },
 ];
 
 function handleLogin() {
