@@ -1,40 +1,58 @@
-// Protección de ruta — si no hay sesión vuelve al login
+// Protección de ruta
 const session = sessionStorage.getItem('user');
-if (!session) {
-  window.location.href = '../index.html';
-}
+if (!session) window.location.href = '../index.html';
 const user = JSON.parse(session);
 
-// Mostrar nombre y rol en el header
+// URL de la API
+const API_URL = 'http://127.0.0.1:8000';
+
+// Mostrar usuario en header
 document.getElementById('user-name').textContent = user.name;
 document.getElementById('user-role').textContent = user.role;
 
-// Productos reales de TUMOMITO (del inventario)
-const products = [
-  { name: 'Cortina Gancho Black',      price: 80,   stock: 5,  emoji: '🪟', cat: 'Hogar/Deco',  prov: 'Casa Ideas', badge: 'low' },
-  { name: 'Guirnalda Luces Bebé',      price: 22,   stock: 45, emoji: '✨', cat: 'Hogar/Deco',  prov: 'Casa Ideas', badge: 'hot' },
-  { name: 'Bombilla LED Colgante',      price: 12,   stock: 50, emoji: '💡', cat: 'Lámparas',    prov: 'Casa Ideas', badge: 'hot' },
-  { name: 'Termo Individual Vintage',   price: 35,   stock: 7,  emoji: '♨️', cat: 'Cocina/Baño', prov: 'Casa Ideas', badge: 'low' },
-  { name: 'Store Blackout 150x220',     price: 87,   stock: 11, emoji: '🪟', cat: 'Hogar/Deco',  prov: 'Casa Ideas', badge: ''    },
-  { name: 'Set 16 Cubiertos Oro',       price: 223,  stock: 1,  emoji: '🍴', cat: 'Cocina/Baño', prov: 'Acricolor',  badge: 'low' },
-  { name: 'Lámpara Colgante Cristal',   price: 585,  stock: 6,  emoji: '🔆', cat: 'Lámparas',    prov: 'Acricolor',  badge: 'hot' },
-  { name: 'Lámpara de Pie Cobre',       price: 369,  stock: 2,  emoji: '🔆', cat: 'Lámparas',    prov: 'Acricolor',  badge: 'low' },
-  { name: 'Copa Vino Vidrio 340ml',     price: 20,   stock: 4,  emoji: '🍷', cat: 'Cocina/Baño', prov: 'Acricolor',  badge: 'low' },
-  { name: 'Mochila Plegable 20L',       price: 26,   stock: 27, emoji: '🎒', cat: 'Accesorios',  prov: 'Casa Ideas', badge: ''    },
-  { name: 'Bolso Inflable',             price: 23,   stock: 44, emoji: '👜', cat: 'Accesorios',  prov: 'Casa Ideas', badge: 'new' },
-  { name: 'Audífonos Pepita',           price: 22,   stock: 21, emoji: '🎧', cat: 'Accesorios',  prov: 'Kimpro',     badge: ''    },
-  { name: 'Block Puzzle',               price: 156,  stock: 8,  emoji: '🧩', cat: 'Juguetes',    prov: 'Chikipoom',  badge: 'hot' },
-  { name: 'Muñeca Bebé con Sonido',     price: 88,   stock: 3,  emoji: '🪆', cat: 'Juguetes',    prov: 'Chikipoom',  badge: 'low' },
-  { name: 'Pista de Auto',             price: 186,  stock: 4,  emoji: '🏎️', cat: 'Juguetes',    prov: 'Chikipoom',  badge: ''    },
-  { name: 'Notas Adhesivas Diseño',     price: 13,   stock: 22, emoji: '📝', cat: 'Papelería',   prov: 'Casa Ideas', badge: ''    },
-  { name: 'Set 3 Lápices Tinta Gel',   price: 12,   stock: 15, emoji: '✏️', cat: 'Papelería',   prov: 'Casa Ideas', badge: 'new' },
-  { name: 'Billetera Papelería',        price: 13,   stock: 24, emoji: '👛', cat: 'Papelería',   prov: 'Casa Ideas', badge: ''    },
-  { name: 'Marcador Maleta Forma',      price: 12,   stock: 43, emoji: '🏷️', cat: 'Accesorios',  prov: 'Casa Ideas', badge: 'new' },
-  { name: 'Set Creación Corona Flores', price: 19,   stock: 45, emoji: '🌸', cat: 'Hogar/Deco',  prov: 'Casa Ideas', badge: 'new' },
-];
+// Estado global
+let allProducts = [];
 
-function renderProducts(list) {
+// ── CARGAR PRODUCTOS DESDE LA API ──
+async function cargarProductos() {
   const grid = document.getElementById('product-grid');
+  const count = document.getElementById('prod-count');
+  grid.innerHTML = '<p style="color:var(--text2);font-size:13px;grid-column:1/-1">Cargando productos...</p>';
+
+  try {
+    const res = await fetch(`${API_URL}/productos/stock`);
+    const data = await res.json();
+
+    allProducts = data.map(p => ({
+      nombre:    p.nombre,
+      precio:    p.precio_venta || 0,
+      stock:     p.stock_total  || 0,
+      almacen:   p.almacen      || 0,
+      showroom:  p.showroom     || 0,
+      categoria: p.categoria    || 'Sin categoría',
+      proveedor: p.proveedor    || 'Sin proveedor',
+      codigo:    p.codigo_interno,
+      badge:     p.stock_total === 0 ? 'agotado' :
+                 p.stock_total <= 5  ? 'low' : ''
+    }));
+
+    // Métricas
+    document.getElementById('total-prods').textContent = allProducts.length;
+    document.getElementById('stock-critico').textContent =
+      allProducts.filter(p => p.stock <= 5).length;
+
+    renderProducts(allProducts);
+    llenarFiltroProveedores();
+
+  } catch(err) {
+    grid.innerHTML = '<p style="color:var(--red);font-size:13px;grid-column:1/-1">Error conectando con la API. ¿Está corriendo el servidor?</p>';
+    console.error(err);
+  }
+}
+
+// ── RENDER PRODUCTOS ──
+function renderProducts(list) {
+  const grid  = document.getElementById('product-grid');
   const count = document.getElementById('prod-count');
   count.textContent = `(${list.length} productos)`;
 
@@ -43,43 +61,52 @@ function renderProducts(list) {
     return;
   }
 
+  const emojis = {
+    'Hogar/Deco': '🏠', 'Cocina/Baño': '🍳', 'Papelería': '📝',
+    'Juguetes': '🧸', 'Accesorios': '👜', 'Lámparas': '💡',
+    'Sin categoría': '📦'
+  };
+
   grid.innerHTML = list.map((p, i) => `
     <div class="product-card" onclick="showProduct(${i})">
-      ${p.badge === 'hot' ? '<div class="badge badge-hot">Más vendido</div>' :
-        p.badge === 'new' ? '<div class="badge badge-new">Nuevo</div>' :
-        p.badge === 'low' ? '<div class="badge badge-low">Stock bajo</div>' : ''}
-      <div class="prod-img">${p.emoji}</div>
-      <div class="prod-name">${p.name}</div>
-      <div class="prod-price">Bs. ${p.price}</div>
-      <div class="prod-meta">${p.stock} u. · ${p.cat}</div>
-      <div class="prod-meta" style="color:var(--text2)">${p.prov}</div>
+      ${p.badge === 'low'    ? '<div class="badge badge-low">Stock bajo</div>'  :
+        p.badge === 'agotado'? '<div class="badge badge-hot">Agotado</div>'     : ''}
+      <div class="prod-img">${emojis[p.categoria] || '📦'}</div>
+      <div class="prod-name">${p.nombre}</div>
+      <div class="prod-price">Bs. ${p.precio}</div>
+      <div class="prod-meta">Stock: ${p.stock} u. · ${p.proveedor}</div>
     </div>
   `).join('');
 }
 
+// ── FILTROS ──
 function filterProducts() {
   const q    = document.getElementById('search-input').value.toLowerCase();
   const cat  = document.getElementById('cat-filter').value;
   const prov = document.getElementById('prov-filter').value;
 
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(q) &&
-    (cat  === '' || p.cat  === cat) &&
-    (prov === '' || p.prov === prov)
+  const filtered = allProducts.filter(p =>
+    p.nombre.toLowerCase().includes(q) &&
+    (cat  === '' || p.categoria === cat) &&
+    (prov === '' || p.proveedor === prov)
   );
   renderProducts(filtered);
 }
 
-function showProduct(i) {
-  const p = products[i];
-  alert(`${p.name}\nPrecio: Bs. ${p.price}\nStock: ${p.stock} u.\nCategoría: ${p.cat}\nProveedor: ${p.prov}`);
+function llenarFiltroProveedores() {
+  const select = document.getElementById('prov-filter');
+  const proveedores = [...new Set(allProducts.map(p => p.proveedor))].sort();
+  select.innerHTML = '<option value="">Todos los proveedores</option>' +
+    proveedores.map(p => `<option value="${p}">${p}</option>`).join('');
 }
 
-// Métricas
-document.getElementById('total-prods').textContent = products.length;
-document.getElementById('stock-critico').textContent = products.filter(p => p.stock <= 5).length;
+// ── DETALLE PRODUCTO ──
+function showProduct(i) {
+  const p = allProducts[i];
+  alert(`${p.nombre}\nCódigo: ${p.codigo}\nPrecio: Bs. ${p.precio}\nStock total: ${p.stock} u.\nAlmacén: ${p.almacen} | Showroom: ${p.showroom}\nProveedor: ${p.proveedor}`);
+}
 
-// Navegación
+// ── NAVEGACIÓN ──
 function setView(v, el) {
   ['catalogo','pedidos','analisis','clientes','proveedores'].forEach(x => {
     document.getElementById('view-' + x).style.display = x === v ? '' : 'none';
@@ -88,7 +115,7 @@ function setView(v, el) {
   el.classList.add('active');
 }
 
-// Tabs clientes
+// ── TABS CLIENTES ──
 function setTab(el, tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -97,11 +124,11 @@ function setTab(el, tab) {
   });
 }
 
-// Logout
+// ── LOGOUT ──
 function logout() {
   sessionStorage.removeItem('user');
   window.location.href = '../index.html';
 }
 
-// Render inicial
-renderProducts(products);
+// ── INICIO ──
+cargarProductos();
