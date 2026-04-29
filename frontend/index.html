@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUMOMITO — Sistema de Ventas</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="logo-main">TUMOMITO</span>
+      <span class="logo-sub">ventas</span>
+    </div>
+
+    <p class="login-welcome">Bienvenido, inicia sesión para continuar</p>
+
+    <div class="alert" id="alert-box" style="display:none"></div>
+
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" placeholder="usuario@gmail.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <button class="btn-login" id="btn-login" onclick="handleLogin()">
+      Iniciar sesión
+    </button>
+
+    <p class="login-footer">Sistema de ventas v1.0 — TUMOMITO Importadora</p>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
