@@ -95,24 +95,103 @@
             <!-- ── PEDIDOS ── -->
             <div id="view-pedidos" style="display:none">
                 <div class="section-title">Gestión de pedidos</div>
-                <div class="panel">
-                    <div class="order-row header-row">
-                        <span>Cliente / Producto</span><span>Monto</span><span>Fecha</span><span>Estado</span>
+
+                <div class="metrics" style="margin-bottom:1.25rem">
+                    <div class="metric" style="background:#4C1D95">
+                        <div class="metric-label">Total pedidos</div>
+                        <div class="metric-value" id="ped-total">—</div>
+                        <div class="metric-delta">registrados</div>
                     </div>
-                    <div class="order-row"><span><b>Carlos M.</b> — Cortina Blackout</span><span>Bs. 870</span><span>Hoy
-                            09:14</span><span class="status s-pendiente">Pendiente</span></div>
-                    <div class="order-row"><span><b>Ana R.</b> — Set Cubiertos Oro</span><span>Bs. 446</span><span>Hoy
-                            08:52</span><span class="status s-enviado">Enviado</span></div>
-                    <div class="order-row"><span><b>Pedro L.</b> — Mochila Plegable</span><span>Bs. 520</span><span>Ayer
-                            18:30</span><span class="status s-entregado">Entregado</span></div>
-                    <div class="order-row"><span><b>Maria C.</b> — Lámpara Colgante</span><span>Bs.
-                            1,170</span><span>Ayer 14:10</span><span class="status s-enviado">Enviado</span></div>
-                    <div class="order-row"><span><b>Luis V.</b> — Guirnalda Luces</span><span>Bs. 440</span><span>28
-                            Abr</span><span class="status s-entregado">Entregado</span></div>
-                    <div class="order-row"><span><b>Sofia B.</b> — Robot Cocina</span><span>Bs. 1,200</span><span>27
-                            Abr</span><span class="status s-entregado">Entregado</span></div>
+                    <div class="metric" style="background:#6D28D9">
+                        <div class="metric-label">Pendientes</div>
+                        <div class="metric-value" id="ped-pendientes">—</div>
+                        <div class="metric-delta">por despachar</div>
+                    </div>
+                    <div class="metric" style="background:#7C3AED">
+                        <div class="metric-label">Entregados</div>
+                        <div class="metric-value" id="ped-entregados">—</div>
+                        <div class="metric-delta">completados</div>
+                    </div>
+                    <div class="metric" style="background:#9333EA">
+                        <div class="metric-label">Total facturado</div>
+                        <div class="metric-value" id="ped-facturado">—</div>
+                        <div class="metric-delta">en ventas</div>
+                    </div>
                 </div>
-                <button class="btn-primary">Exportar pedidos</button>
+
+                <div class="topbar" style="margin-bottom:1rem">
+                    <input type="text" id="ped-search" placeholder="Buscar por número o cliente..."
+                        oninput="filterPedidos()">
+                    <select id="ped-estado" onchange="filterPedidos()">
+                        <option value="">Todos los estados</option>
+                        <option value="borrador">Borrador</option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="despachado">Despachado</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                    <button class="btn-primary" onclick="abrirNuevoPedido()">+ Nuevo pedido</button>
+                </div>
+
+                <!-- Formulario nuevo pedido -->
+                <div class="panel" id="form-pedido" style="display:none;margin-bottom:1rem">
+                    <div class="panel-title">Nuevo pedido</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                        <div>
+                            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Cliente
+                                *</label>
+                            <select id="ped-cliente"
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 8px;font-size:13px;background:var(--bg2);color:var(--text1)"></select>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Observaciones</label>
+                            <input type="text" id="ped-observaciones" placeholder="Notas del pedido..."
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px">
+                        </div>
+                    </div>
+
+                    <!-- Agregar productos -->
+                    <div style="background:var(--bg2);border-radius:8px;padding:10px;margin-bottom:10px">
+                        <div style="font-size:12px;font-weight:500;margin-bottom:8px">Agregar productos</div>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <select id="ped-producto"
+                                style="flex:1;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 8px;font-size:12px;background:var(--white);color:var(--text1)"></select>
+                            <input type="number" id="ped-cantidad" value="1" min="1"
+                                style="width:70px;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 8px;font-size:13px;text-align:center">
+                            <button class="btn-primary" onclick="agregarAlCarrito()">Agregar</button>
+                        </div>
+                    </div>
+
+                    <!-- Carrito -->
+                    <div style="margin-bottom:10px">
+                        <div style="font-size:12px;font-weight:500;margin-bottom:6px">Productos en el pedido</div>
+                        <div id="carrito-lista"></div>
+                        <div id="carrito-total"
+                            style="font-size:14px;font-weight:500;color:#7C3AED;margin-top:8px;text-align:right">Total:
+                            Bs. 0</div>
+                    </div>
+
+                    <div style="display:flex;gap:8px">
+                        <button class="btn-primary" onclick="guardarPedido()">Confirmar pedido</button>
+                        <button class="btn-outline" onclick="cerrarFormPedido()">Cancelar</button>
+                    </div>
+                </div>
+
+                <!-- Tabla pedidos -->
+                <div class="panel">
+                    <div class="order-row header-row" style="grid-template-columns:0.8fr 1.2fr 0.8fr 0.8fr 0.8fr 1fr">
+                        <span>Número</span>
+                        <span>Cliente</span>
+                        <span>Productos</span>
+                        <span>Fecha</span>
+                        <span>Total</span>
+                        <span>Estado</span>
+                    </div>
+                    <div id="tabla-pedidos">
+                        <p style="font-size:13px;color:var(--text2);padding:8px 0">Cargando pedidos...</p>
+                    </div>
+                </div>
             </div>
 
             <!-- ── ANÁLISIS ── -->
