@@ -26,6 +26,7 @@ TUMOMITO permite gestionar el ciclo completo de ventas de una importadora: desde
 | Deploy backend | Railway |
 
 ## Estructura del proyecto
+```
 importadora-ventas/
 ├── frontend/
 │   ├── index.html          # Login
@@ -42,17 +43,18 @@ importadora-ventas/
 │   │   └── pedidos.js      # Pedidos
 │   └── assets/
 └── backend/
-├── main.py             # Entrada FastAPI
-├── requirements.txt
-├── .env.example
-└── app/
-├── database.py
-└── routers/
-├── productos.py
-├── proveedores.py
-├── clientes.py
-├── pedidos.py
-└── analisis.py
+    ├── main.py             # Entrada FastAPI
+    ├── requirements.txt
+    ├── .env.example
+    └── app/
+        ├── database.py
+        └── routers/
+            ├── productos.py
+            ├── proveedores.py
+            ├── clientes.py
+            ├── pedidos.py
+            └── analisis.py
+```
 
 ## Correr el proyecto localmente
 
