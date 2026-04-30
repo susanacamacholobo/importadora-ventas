@@ -1,157 +1,229 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TUMOMITO — Dashboard</title>
-  <link rel="stylesheet" href="../css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUMOMITO — Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body class="dash-page">
 
-  <!-- TOPBAR -->
-  <header class="dash-header">
-    <div class="dash-logo">TUMO<span>MITO</span></div>
-    <div class="dash-user">
-      <span id="user-name">Cargando...</span>
-      <span id="user-role" class="role-badge"></span>
-      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    <!-- TOPBAR -->
+    <header class="dash-header">
+        <div class="dash-logo">TUMO<span>MITO</span></div>
+        <div class="dash-user">
+            <span id="user-name">Cargando...</span>
+            <span id="user-role" class="role-badge"></span>
+            <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <!-- LAYOUT -->
+    <div class="dash-layout">
+
+        <!-- SIDEBAR -->
+        <nav class="dash-sidebar">
+            <div class="nav-item active" onclick="setView('catalogo', this)">Catálogo</div>
+            <div class="nav-item" onclick="setView('pedidos', this)">Pedidos</div>
+            <div class="nav-item" onclick="setView('analisis', this)">Análisis</div>
+            <div class="nav-item" onclick="setView('clientes', this)">Clientes</div>
+            <div class="nav-item" onclick="setView('proveedores', this)">Proveedores</div>
+        </nav>
+
+        <!-- CONTENIDO -->
+        <main class="dash-content">
+
+            <!-- ── CATÁLOGO ── -->
+            <div id="view-catalogo">
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-label">Ventas hoy</div>
+                        <div class="metric-value">Bs. 4,820</div>
+                        <div class="metric-delta up">+23% vs ayer</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Pedidos activos</div>
+                        <div class="metric-value">37</div>
+                        <div class="metric-delta up">+8 nuevos</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Productos</div>
+                        <div class="metric-value" id="total-prods">—</div>
+                        <div class="metric-delta">en catálogo</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Stock crítico</div>
+                        <div class="metric-value" id="stock-critico">—</div>
+                        <div class="metric-delta">requieren atención</div>
+                    </div>
+                </div>
+
+                <div class="topbar">
+                    <input type="text" placeholder="Buscar producto..." id="search-input" oninput="filterProducts()">
+                    <select id="cat-filter" onchange="filterProducts()">
+                        <option value="">Todas las categorías</option>
+                        <option value="Decoración del Hogar">Decoración del Hogar</option>
+                        <option value="Ropa y Textiles">Ropa y Textiles</option>
+                        <option value="Juguetes y Entretenimiento">Juguetes y Entretenimiento</option>
+                        <option value="Cosméticos y Cuidado Personal">Cosméticos y Cuidado Personal</option>
+                        <option value="Relojes y Accesorios">Relojes y Accesorios</option>
+                        <option value="Papelería y Agendas">Papelería y Agendas</option>
+                        <option value="Electrónica y Tecnología">Electrónica y Tecnología</option>
+                        <option value="Velas y Aromatizadores">Velas y Aromatizadores</option>
+                        <option value="Textiles de Baño">Textiles de Baño</option>
+                        <option value="Marcos y Espejos">Marcos y Espejos</option>
+                        <option value="Cortinas y Stores">Cortinas y Stores</option>
+                        <option value="Varios">Varios</option>
+                    </select>
+                    <select id="prov-filter" onchange="filterProducts()">
+                        <option value="">Todos los proveedores</option>
+                        <option value="Casa Ideas">Casa Ideas</option>
+                        <option value="Acricolor">Acricolor</option>
+                        <option value="Chikipoom">Chikipoom</option>
+                        <option value="Makro">Makro</option>
+                        <option value="Kimpro">Kimpro</option>
+                    </select>
+                </div>
+
+                <div class="section-title">Catálogo de productos <span id="prod-count"
+                        style="font-weight:400;color:var(--text2);font-size:12px"></span></div>
+                <div class="products" id="product-grid"></div>
+            </div>
+
+            <!-- ── PEDIDOS ── -->
+            <div id="view-pedidos" style="display:none">
+                <div class="section-title">Gestión de pedidos</div>
+                <div class="panel">
+                    <div class="order-row header-row">
+                        <span>Cliente / Producto</span><span>Monto</span><span>Fecha</span><span>Estado</span>
+                    </div>
+                    <div class="order-row"><span><b>Carlos M.</b> — Cortina Blackout</span><span>Bs. 870</span><span>Hoy
+                            09:14</span><span class="status s-pendiente">Pendiente</span></div>
+                    <div class="order-row"><span><b>Ana R.</b> — Set Cubiertos Oro</span><span>Bs. 446</span><span>Hoy
+                            08:52</span><span class="status s-enviado">Enviado</span></div>
+                    <div class="order-row"><span><b>Pedro L.</b> — Mochila Plegable</span><span>Bs. 520</span><span>Ayer
+                            18:30</span><span class="status s-entregado">Entregado</span></div>
+                    <div class="order-row"><span><b>Maria C.</b> — Lámpara Colgante</span><span>Bs.
+                            1,170</span><span>Ayer 14:10</span><span class="status s-enviado">Enviado</span></div>
+                    <div class="order-row"><span><b>Luis V.</b> — Guirnalda Luces</span><span>Bs. 440</span><span>28
+                            Abr</span><span class="status s-entregado">Entregado</span></div>
+                    <div class="order-row"><span><b>Sofia B.</b> — Robot Cocina</span><span>Bs. 1,200</span><span>27
+                            Abr</span><span class="status s-entregado">Entregado</span></div>
+                </div>
+                <button class="btn-primary">Exportar pedidos</button>
+            </div>
+
+            <!-- ── ANÁLISIS ── -->
+            <div id="view-analisis" style="display:none">
+                <div class="section-title">Análisis de ventas</div>
+                <div class="panel">
+                    <div class="panel-title">Categorías más vendidas</div>
+                    <div class="bar-wrap"><span class="bar-label">Hogar/Deco</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width:82%;background:#185FA5"></div>
+                        </div><span>82%</span>
+                    </div>
+                    <div class="bar-wrap"><span class="bar-label">Cocina/Baño</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width:65%;background:#1D9E75"></div>
+                        </div><span>65%</span>
+                    </div>
+                    <div class="bar-wrap"><span class="bar-label">Lámparas</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width:54%;background:#534AB7"></div>
+                        </div><span>54%</span>
+                    </div>
+                    <div class="bar-wrap"><span class="bar-label">Papelería</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width:38%;background:#EF9F27"></div>
+                        </div><span>38%</span>
+                    </div>
+                    <div class="bar-wrap"><span class="bar-label">Juguetes</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="width:27%;background:#D85A30"></div>
+                        </div><span>27%</span>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">Recomendación IA</div>
+                    <div class="ai-box">
+                        Se detecta alta rotación en <b>artículos de Hogar y Decoración</b> (velas, marcos, cortinas). Se
+                        recomienda reponer stock de Casa Ideas — quedan 38 productos en nivel crítico.<br><br>
+                        Oportunidad: el proveedor <b>Acricolor</b> tiene lámparas colgantes de cristal con alta demanda
+                        y stock disponible. Considerar promoción especial.<br><br>
+                        Temporada: se aproxima Día de la Madre — incrementar stock de <b>sets de cocina, fragancias y
+                            decoración</b>.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── CLIENTES ── -->
+            <div id="view-clientes" style="display:none">
+                <div class="section-title">Base de clientes</div>
+                <div class="panel">
+                    <div class="tab-bar">
+                        <div class="tab active" onclick="setTab(this,'frecuentes')">Frecuentes</div>
+                        <div class="tab" onclick="setTab(this,'nuevos')">Nuevos</div>
+                        <div class="tab" onclick="setTab(this,'inactivos')">Inactivos</div>
+                    </div>
+                    <div id="tab-frecuentes">
+                        <div class="order-row header-row"><span>Cliente</span><span>Compras</span><span>Total
+                                Bs.</span><span>Segmento</span></div>
+                        <div class="order-row"><span>Maria C.</span><span>14</span><span>6,840</span><span
+                                class="status s-entregado">VIP</span></div>
+                        <div class="order-row"><span>Pedro L.</span><span>11</span><span>4,200</span><span
+                                class="status s-entregado">VIP</span></div>
+                        <div class="order-row"><span>Sofia B.</span><span>9</span><span>3,100</span><span
+                                class="status s-enviado">Premium</span></div>
+                        <div class="order-row"><span>Luis V.</span><span>7</span><span>2,450</span><span
+                                class="status s-enviado">Premium</span></div>
+                    </div>
+                    <div id="tab-nuevos" style="display:none">
+                        <div class="order-row"><span>Juan P.</span><span>1</span><span>580</span><span
+                                class="status s-pendiente">Nuevo</span></div>
+                        <div class="order-row"><span>Rosa M.</span><span>2</span><span>420</span><span
+                                class="status s-pendiente">Nuevo</span></div>
+                    </div>
+                    <div id="tab-inactivos" style="display:none">
+                        <div class="order-row"><span>Ana F.</span><span>3</span><span>890</span><span
+                                class="status s-pendiente">Inactivo</span></div>
+                        <div class="order-row"><span>Carlos Q.</span><span>5</span><span>1,200</span><span
+                                class="status s-pendiente">Inactivo</span></div>
+                    </div>
+                </div>
+                <button class="btn-primary">Campaña de reactivación</button>
+            </div>
+
+            <!-- ── PROVEEDORES ── -->
+            <div id="view-proveedores" style="display:none">
+                <div class="section-title">Proveedores activos</div>
+                <div class="panel">
+                    <div class="order-row header-row">
+                        <span>Proveedor</span><span>Productos</span><span>Categoría</span><span>Estado</span></div>
+                    <div class="order-row"><span><b>Casa Ideas</b></span><span>150+</span><span>Hogar/Deco</span><span
+                            class="status s-entregado">Activo</span></div>
+                    <div class="order-row"><span><b>Acricolor</b></span><span>80+</span><span>Lámparas</span><span
+                            class="status s-entregado">Activo</span></div>
+                    <div class="order-row"><span><b>Chikipoom</b></span><span>25</span><span>Juguetes</span><span
+                            class="status s-enviado">Consignación</span></div>
+                    <div class="order-row"><span><b>Makro</b></span><span>41</span><span>Varios</span><span
+                            class="status s-entregado">Activo</span></div>
+                    <div class="order-row"><span><b>Kimpro</b></span><span>7</span><span>Accesorios</span><span
+                            class="status s-pendiente">Revisar</span></div>
+                    <div class="order-row"><span><b>Smart Toys</b></span><span>15+</span><span>Juguetes</span><span
+                            class="status s-enviado">Cotización</span></div>
+                    <div class="order-row"><span><b>Funky Fish</b></span><span>10+</span><span>Accesorios</span><span
+                            class="status s-enviado">Cotización</span></div>
+                </div>
+            </div>
+
+        </main>
     </div>
-  </header>
 
-  <!-- LAYOUT -->
-  <div class="dash-layout">
-
-    <!-- SIDEBAR -->
-    <nav class="dash-sidebar">
-      <div class="nav-item active" onclick="setView('catalogo', this)">Catálogo</div>
-      <div class="nav-item" onclick="setView('pedidos', this)">Pedidos</div>
-      <div class="nav-item" onclick="setView('analisis', this)">Análisis</div>
-      <div class="nav-item" onclick="setView('clientes', this)">Clientes</div>
-      <div class="nav-item" onclick="setView('proveedores', this)">Proveedores</div>
-    </nav>
-
-    <!-- CONTENIDO -->
-    <main class="dash-content">
-
-      <!-- ── CATÁLOGO ── -->
-      <div id="view-catalogo">
-        <div class="metrics">
-          <div class="metric"><div class="metric-label">Ventas hoy</div><div class="metric-value">Bs. 4,820</div><div class="metric-delta up">+23% vs ayer</div></div>
-          <div class="metric"><div class="metric-label">Pedidos activos</div><div class="metric-value">37</div><div class="metric-delta up">+8 nuevos</div></div>
-          <div class="metric"><div class="metric-label">Productos</div><div class="metric-value" id="total-prods">—</div><div class="metric-delta">en catálogo</div></div>
-          <div class="metric"><div class="metric-label">Stock crítico</div><div class="metric-value red" id="stock-critico">—</div><div class="metric-delta">requieren atención</div></div>
-        </div>
-
-        <div class="topbar">
-          <input type="text" placeholder="Buscar producto..." id="search-input" oninput="filterProducts()">
-          <select id="cat-filter" onchange="filterProducts()">
-            <option value="">Todas las categorías</option>
-            <option value="Hogar/Deco">Hogar y Decoración</option>
-            <option value="Cocina/Baño">Cocina y Baño</option>
-            <option value="Papelería">Papelería</option>
-            <option value="Juguetes">Juguetes</option>
-            <option value="Accesorios">Accesorios</option>
-            <option value="Lámparas">Lámparas</option>
-          </select>
-          <select id="prov-filter" onchange="filterProducts()">
-            <option value="">Todos los proveedores</option>
-            <option value="Casa Ideas">Casa Ideas</option>
-            <option value="Acricolor">Acricolor</option>
-            <option value="Chikipoom">Chikipoom</option>
-            <option value="Makro">Makro</option>
-            <option value="Kimpro">Kimpro</option>
-          </select>
-        </div>
-
-        <div class="section-title">Catálogo de productos <span id="prod-count" style="font-weight:400;color:var(--text2);font-size:12px"></span></div>
-        <div class="products" id="product-grid"></div>
-      </div>
-
-      <!-- ── PEDIDOS ── -->
-      <div id="view-pedidos" style="display:none">
-        <div class="section-title">Gestión de pedidos</div>
-        <div class="panel">
-          <div class="order-row header-row">
-            <span>Cliente / Producto</span><span>Monto</span><span>Fecha</span><span>Estado</span>
-          </div>
-          <div class="order-row"><span><b>Carlos M.</b> — Cortina Blackout</span><span>Bs. 870</span><span>Hoy 09:14</span><span class="status s-pendiente">Pendiente</span></div>
-          <div class="order-row"><span><b>Ana R.</b> — Set Cubiertos Oro</span><span>Bs. 446</span><span>Hoy 08:52</span><span class="status s-enviado">Enviado</span></div>
-          <div class="order-row"><span><b>Pedro L.</b> — Mochila Plegable</span><span>Bs. 520</span><span>Ayer 18:30</span><span class="status s-entregado">Entregado</span></div>
-          <div class="order-row"><span><b>Maria C.</b> — Lámpara Colgante</span><span>Bs. 1,170</span><span>Ayer 14:10</span><span class="status s-enviado">Enviado</span></div>
-          <div class="order-row"><span><b>Luis V.</b> — Guirnalda Luces</span><span>Bs. 440</span><span>28 Abr</span><span class="status s-entregado">Entregado</span></div>
-          <div class="order-row"><span><b>Sofia B.</b> — Robot Cocina</span><span>Bs. 1,200</span><span>27 Abr</span><span class="status s-entregado">Entregado</span></div>
-        </div>
-        <button class="btn-primary">Exportar pedidos</button>
-      </div>
-
-      <!-- ── ANÁLISIS ── -->
-      <div id="view-analisis" style="display:none">
-        <div class="section-title">Análisis de ventas</div>
-        <div class="panel">
-          <div class="panel-title">Categorías más vendidas</div>
-          <div class="bar-wrap"><span class="bar-label">Hogar/Deco</span><div class="bar-bg"><div class="bar-fill" style="width:82%;background:#185FA5"></div></div><span>82%</span></div>
-          <div class="bar-wrap"><span class="bar-label">Cocina/Baño</span><div class="bar-bg"><div class="bar-fill" style="width:65%;background:#1D9E75"></div></div><span>65%</span></div>
-          <div class="bar-wrap"><span class="bar-label">Lámparas</span><div class="bar-bg"><div class="bar-fill" style="width:54%;background:#534AB7"></div></div><span>54%</span></div>
-          <div class="bar-wrap"><span class="bar-label">Papelería</span><div class="bar-bg"><div class="bar-fill" style="width:38%;background:#EF9F27"></div></div><span>38%</span></div>
-          <div class="bar-wrap"><span class="bar-label">Juguetes</span><div class="bar-bg"><div class="bar-fill" style="width:27%;background:#D85A30"></div></div><span>27%</span></div>
-        </div>
-        <div class="panel">
-          <div class="panel-title">Recomendación IA</div>
-          <div class="ai-box">
-            Se detecta alta rotación en <b>artículos de Hogar y Decoración</b> (velas, marcos, cortinas). Se recomienda reponer stock de Casa Ideas — quedan 38 productos en nivel crítico.<br><br>
-            Oportunidad: el proveedor <b>Acricolor</b> tiene lámparas colgantes de cristal con alta demanda y stock disponible. Considerar promoción especial.<br><br>
-            Temporada: se aproxima Día de la Madre — incrementar stock de <b>sets de cocina, fragancias y decoración</b>.
-          </div>
-        </div>
-      </div>
-
-      <!-- ── CLIENTES ── -->
-      <div id="view-clientes" style="display:none">
-        <div class="section-title">Base de clientes</div>
-        <div class="panel">
-          <div class="tab-bar">
-            <div class="tab active" onclick="setTab(this,'frecuentes')">Frecuentes</div>
-            <div class="tab" onclick="setTab(this,'nuevos')">Nuevos</div>
-            <div class="tab" onclick="setTab(this,'inactivos')">Inactivos</div>
-          </div>
-          <div id="tab-frecuentes">
-            <div class="order-row header-row"><span>Cliente</span><span>Compras</span><span>Total Bs.</span><span>Segmento</span></div>
-            <div class="order-row"><span>Maria C.</span><span>14</span><span>6,840</span><span class="status s-entregado">VIP</span></div>
-            <div class="order-row"><span>Pedro L.</span><span>11</span><span>4,200</span><span class="status s-entregado">VIP</span></div>
-            <div class="order-row"><span>Sofia B.</span><span>9</span><span>3,100</span><span class="status s-enviado">Premium</span></div>
-            <div class="order-row"><span>Luis V.</span><span>7</span><span>2,450</span><span class="status s-enviado">Premium</span></div>
-          </div>
-          <div id="tab-nuevos" style="display:none">
-            <div class="order-row"><span>Juan P.</span><span>1</span><span>580</span><span class="status s-pendiente">Nuevo</span></div>
-            <div class="order-row"><span>Rosa M.</span><span>2</span><span>420</span><span class="status s-pendiente">Nuevo</span></div>
-          </div>
-          <div id="tab-inactivos" style="display:none">
-            <div class="order-row"><span>Ana F.</span><span>3</span><span>890</span><span class="status s-pendiente">Inactivo</span></div>
-            <div class="order-row"><span>Carlos Q.</span><span>5</span><span>1,200</span><span class="status s-pendiente">Inactivo</span></div>
-          </div>
-        </div>
-        <button class="btn-primary">Campaña de reactivación</button>
-      </div>
-
-      <!-- ── PROVEEDORES ── -->
-      <div id="view-proveedores" style="display:none">
-        <div class="section-title">Proveedores activos</div>
-        <div class="panel">
-          <div class="order-row header-row"><span>Proveedor</span><span>Productos</span><span>Categoría</span><span>Estado</span></div>
-          <div class="order-row"><span><b>Casa Ideas</b></span><span>150+</span><span>Hogar/Deco</span><span class="status s-entregado">Activo</span></div>
-          <div class="order-row"><span><b>Acricolor</b></span><span>80+</span><span>Lámparas</span><span class="status s-entregado">Activo</span></div>
-          <div class="order-row"><span><b>Chikipoom</b></span><span>25</span><span>Juguetes</span><span class="status s-enviado">Consignación</span></div>
-          <div class="order-row"><span><b>Makro</b></span><span>41</span><span>Varios</span><span class="status s-entregado">Activo</span></div>
-          <div class="order-row"><span><b>Kimpro</b></span><span>7</span><span>Accesorios</span><span class="status s-pendiente">Revisar</span></div>
-          <div class="order-row"><span><b>Smart Toys</b></span><span>15+</span><span>Juguetes</span><span class="status s-enviado">Cotización</span></div>
-          <div class="order-row"><span><b>Funky Fish</b></span><span>10+</span><span>Accesorios</span><span class="status s-enviado">Cotización</span></div>
-        </div>
-      </div>
-
-    </main>
-  </div>
-
-  <script src="../js/auth.js"></script>
-  <script src="../js/app.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
 </body>
+
 </html>
