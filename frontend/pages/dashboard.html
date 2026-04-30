@@ -213,24 +213,61 @@
             <!-- ── PROVEEDORES ── -->
             <div id="view-proveedores" style="display:none">
                 <div class="section-title">Proveedores activos</div>
+
+                <!-- Métricas -->
+                <div class="metrics" style="margin-bottom:1.25rem">
+                    <div class="metric" style="background:#4C1D95">
+                        <div class="metric-label">Total proveedores</div>
+                        <div class="metric-value" id="prov-total">—</div>
+                        <div class="metric-delta">registrados</div>
+                    </div>
+                    <div class="metric" style="background:#6D28D9">
+                        <div class="metric-label">Importadores</div>
+                        <div class="metric-value" id="prov-importadores">—</div>
+                        <div class="metric-delta">internacionales</div>
+                    </div>
+                    <div class="metric" style="background:#7C3AED">
+                        <div class="metric-label">Locales</div>
+                        <div class="metric-value" id="prov-locales">—</div>
+                        <div class="metric-delta">nacionales</div>
+                    </div>
+                    <div class="metric" style="background:#9333EA">
+                        <div class="metric-label">Consignación</div>
+                        <div class="metric-value" id="prov-consignacion">—</div>
+                        <div class="metric-delta">en consignación</div>
+                    </div>
+                </div>
+
+                <!-- Buscador -->
+                <div class="topbar" style="margin-bottom:1rem">
+                    <input type="text" id="prov-search" placeholder="Buscar proveedor..." oninput="filterProveedores()">
+                    <select id="prov-tipo" onchange="filterProveedores()">
+                        <option value="">Todos los tipos</option>
+                        <option value="importador">Importador</option>
+                        <option value="local">Local</option>
+                        <option value="consignacion">Consignación</option>
+                        <option value="mixto">Mixto</option>
+                    </select>
+                </div>
+
+                <!-- Tabla -->
                 <div class="panel">
                     <div class="order-row header-row">
-                        <span>Proveedor</span><span>Productos</span><span>Categoría</span><span>Estado</span>
+                        <span>Proveedor</span>
+                        <span>Tipo</span>
+                        <span>Productos</span>
+                        <span>Estado</span>
                     </div>
-                    <div class="order-row"><span><b>Casa Ideas</b></span><span>150+</span><span>Hogar/Deco</span><span
-                            class="status s-entregado">Activo</span></div>
-                    <div class="order-row"><span><b>Acricolor</b></span><span>80+</span><span>Lámparas</span><span
-                            class="status s-entregado">Activo</span></div>
-                    <div class="order-row"><span><b>Chikipoom</b></span><span>25</span><span>Juguetes</span><span
-                            class="status s-enviado">Consignación</span></div>
-                    <div class="order-row"><span><b>Makro</b></span><span>41</span><span>Varios</span><span
-                            class="status s-entregado">Activo</span></div>
-                    <div class="order-row"><span><b>Kimpro</b></span><span>7</span><span>Accesorios</span><span
-                            class="status s-pendiente">Revisar</span></div>
-                    <div class="order-row"><span><b>Smart Toys</b></span><span>15+</span><span>Juguetes</span><span
-                            class="status s-enviado">Cotización</span></div>
-                    <div class="order-row"><span><b>Funky Fish</b></span><span>10+</span><span>Accesorios</span><span
-                            class="status s-enviado">Cotización</span></div>
+                    <div id="tabla-proveedores"></div>
+                </div>
+
+                <!-- Detalle proveedor -->
+                <div class="panel" id="detalle-proveedor" style="display:none">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <div class="panel-title" id="detalle-prov-nombre">—</div>
+                        <button class="btn-outline" onclick="cerrarDetalle()" style="font-size:12px">✕ Cerrar</button>
+                    </div>
+                    <div id="detalle-prov-productos"></div>
                 </div>
             </div>
 
