@@ -117,45 +117,59 @@
 
             <!-- ── ANÁLISIS ── -->
             <div id="view-analisis" style="display:none">
-                <div class="section-title">Análisis de ventas</div>
-                <div class="panel">
-                    <div class="panel-title">Categorías más vendidas</div>
-                    <div class="bar-wrap"><span class="bar-label">Hogar/Deco</span>
-                        <div class="bar-bg">
-                            <div class="bar-fill" style="width:82%;background:#185FA5"></div>
-                        </div><span>82%</span>
+                <div class="section-title">Análisis de inventario</div>
+
+                <!-- Métricas resumen -->
+                <div class="metrics" id="analisis-metrics" style="margin-bottom:1.25rem">
+                    <div class="metric" style="background:#4C1D95">
+                        <div class="metric-label">Valor total inventario</div>
+                        <div class="metric-value" id="val-total">—</div>
+                        <div class="metric-delta">en stock</div>
                     </div>
-                    <div class="bar-wrap"><span class="bar-label">Cocina/Baño</span>
-                        <div class="bar-bg">
-                            <div class="bar-fill" style="width:65%;background:#1D9E75"></div>
-                        </div><span>65%</span>
+                    <div class="metric" style="background:#6D28D9">
+                        <div class="metric-label">Categorías activas</div>
+                        <div class="metric-value" id="val-cats">—</div>
+                        <div class="metric-delta">con productos</div>
                     </div>
-                    <div class="bar-wrap"><span class="bar-label">Lámparas</span>
-                        <div class="bar-bg">
-                            <div class="bar-fill" style="width:54%;background:#534AB7"></div>
-                        </div><span>54%</span>
+                    <div class="metric" style="background:#7C3AED">
+                        <div class="metric-label">Mayor categoría</div>
+                        <div class="metric-value" style="font-size:14px" id="val-top-cat">—</div>
+                        <div class="metric-delta">por valor</div>
                     </div>
-                    <div class="bar-wrap"><span class="bar-label">Papelería</span>
-                        <div class="bar-bg">
-                            <div class="bar-fill" style="width:38%;background:#EF9F27"></div>
-                        </div><span>38%</span>
-                    </div>
-                    <div class="bar-wrap"><span class="bar-label">Juguetes</span>
-                        <div class="bar-bg">
-                            <div class="bar-fill" style="width:27%;background:#D85A30"></div>
-                        </div><span>27%</span>
+                    <div class="metric" style="background:#9333EA">
+                        <div class="metric-label">Unidades en stock</div>
+                        <div class="metric-value" id="val-unidades">—</div>
+                        <div class="metric-delta">total general</div>
                     </div>
                 </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                    <!-- Gráfica por categoría -->
+                    <div class="panel">
+                        <div class="panel-title">Valor por categoría (Bs.)</div>
+                        <div id="chart-categorias"></div>
+                    </div>
+
+                    <!-- Gráfica por proveedor -->
+                    <div class="panel">
+                        <div class="panel-title">Top proveedores por valor</div>
+                        <div id="chart-proveedores"></div>
+                    </div>
+                </div>
+
+                <!-- Stock crítico -->
+                <div class="panel">
+                    <div class="panel-title">Productos con stock crítico (≤5 unidades)</div>
+                    <div class="order-row header-row">
+                        <span>Producto</span><span>Categoría</span><span>Proveedor</span><span>Stock</span>
+                    </div>
+                    <div id="tabla-criticos"></div>
+                </div>
+
+                <!-- Recomendación IA -->
                 <div class="panel">
                     <div class="panel-title">Recomendación IA</div>
-                    <div class="ai-box">
-                        Se detecta alta rotación en <b>artículos de Hogar y Decoración</b> (velas, marcos, cortinas). Se
-                        recomienda reponer stock de Casa Ideas — quedan 38 productos en nivel crítico.<br><br>
-                        Oportunidad: el proveedor <b>Acricolor</b> tiene lámparas colgantes de cristal con alta demanda
-                        y stock disponible. Considerar promoción especial.<br><br>
-                        Temporada: se aproxima Día de la Madre — incrementar stock de <b>sets de cocina, fragancias y
-                            decoración</b>.
-                    </div>
+                    <div class="ai-box" id="ai-recomendacion">Cargando análisis...</div>
                 </div>
             </div>
 
@@ -201,7 +215,8 @@
                 <div class="section-title">Proveedores activos</div>
                 <div class="panel">
                     <div class="order-row header-row">
-                        <span>Proveedor</span><span>Productos</span><span>Categoría</span><span>Estado</span></div>
+                        <span>Proveedor</span><span>Productos</span><span>Categoría</span><span>Estado</span>
+                    </div>
                     <div class="order-row"><span><b>Casa Ideas</b></span><span>150+</span><span>Hogar/Deco</span><span
                             class="status s-entregado">Activo</span></div>
                     <div class="order-row"><span><b>Acricolor</b></span><span>80+</span><span>Lámparas</span><span
