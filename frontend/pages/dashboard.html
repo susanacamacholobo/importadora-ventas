@@ -176,38 +176,92 @@
             <!-- ── CLIENTES ── -->
             <div id="view-clientes" style="display:none">
                 <div class="section-title">Base de clientes</div>
-                <div class="panel">
-                    <div class="tab-bar">
-                        <div class="tab active" onclick="setTab(this,'frecuentes')">Frecuentes</div>
-                        <div class="tab" onclick="setTab(this,'nuevos')">Nuevos</div>
-                        <div class="tab" onclick="setTab(this,'inactivos')">Inactivos</div>
+
+                <!-- Métricas -->
+                <div class="metrics" style="margin-bottom:1.25rem">
+                    <div class="metric" style="background:#4C1D95">
+                        <div class="metric-label">Total clientes</div>
+                        <div class="metric-value" id="cli-total">—</div>
+                        <div class="metric-delta">registrados</div>
                     </div>
-                    <div id="tab-frecuentes">
-                        <div class="order-row header-row"><span>Cliente</span><span>Compras</span><span>Total
-                                Bs.</span><span>Segmento</span></div>
-                        <div class="order-row"><span>Maria C.</span><span>14</span><span>6,840</span><span
-                                class="status s-entregado">VIP</span></div>
-                        <div class="order-row"><span>Pedro L.</span><span>11</span><span>4,200</span><span
-                                class="status s-entregado">VIP</span></div>
-                        <div class="order-row"><span>Sofia B.</span><span>9</span><span>3,100</span><span
-                                class="status s-enviado">Premium</span></div>
-                        <div class="order-row"><span>Luis V.</span><span>7</span><span>2,450</span><span
-                                class="status s-enviado">Premium</span></div>
+                    <div class="metric" style="background:#6D28D9">
+                        <div class="metric-label">Con compras</div>
+                        <div class="metric-value" id="cli-activos">—</div>
+                        <div class="metric-delta">han comprado</div>
                     </div>
-                    <div id="tab-nuevos" style="display:none">
-                        <div class="order-row"><span>Juan P.</span><span>1</span><span>580</span><span
-                                class="status s-pendiente">Nuevo</span></div>
-                        <div class="order-row"><span>Rosa M.</span><span>2</span><span>420</span><span
-                                class="status s-pendiente">Nuevo</span></div>
+                    <div class="metric" style="background:#7C3AED">
+                        <div class="metric-label">Total facturado</div>
+                        <div class="metric-value" id="cli-facturado">—</div>
+                        <div class="metric-delta">en pedidos</div>
                     </div>
-                    <div id="tab-inactivos" style="display:none">
-                        <div class="order-row"><span>Ana F.</span><span>3</span><span>890</span><span
-                                class="status s-pendiente">Inactivo</span></div>
-                        <div class="order-row"><span>Carlos Q.</span><span>5</span><span>1,200</span><span
-                                class="status s-pendiente">Inactivo</span></div>
+                    <div class="metric" style="background:#9333EA">
+                        <div class="metric-label">Nuevos este mes</div>
+                        <div class="metric-value" id="cli-nuevos">—</div>
+                        <div class="metric-delta">registrados</div>
                     </div>
                 </div>
-                <button class="btn-primary">Campaña de reactivación</button>
+
+                <!-- Botón agregar + buscador -->
+                <div class="topbar" style="margin-bottom:1rem">
+                    <input type="text" id="cli-search" placeholder="Buscar cliente..." oninput="filterClientes()">
+                    <button class="btn-primary" onclick="mostrarFormCliente()">+ Nuevo cliente</button>
+                </div>
+
+                <!-- Formulario nuevo cliente (oculto por defecto) -->
+                <div class="panel" id="form-cliente" style="display:none;margin-bottom:1rem">
+                    <div class="panel-title" id="form-cli-titulo">Nuevo cliente</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                        <div>
+                            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Nombre
+                                *</label>
+                            <input type="text" id="cli-nombre" placeholder="Nombre completo"
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Teléfono</label>
+                            <input type="text" id="cli-telefono" placeholder="Ej: 70000000"
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Email</label>
+                            <input type="email" id="cli-email" placeholder="correo@ejemplo.com"
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px">
+                        </div>
+                        <div>
+                            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">NIT /
+                                CI</label>
+                            <input type="text" id="cli-nit" placeholder="Número de documento"
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px">
+                        </div>
+                        <div style="grid-column:1/-1">
+                            <label
+                                style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Dirección</label>
+                            <input type="text" id="cli-direccion" placeholder="Dirección del cliente"
+                                style="width:100%;height:34px;border:0.5px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px">
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px">
+                        <button class="btn-primary" onclick="guardarCliente()">Guardar cliente</button>
+                        <button class="btn-outline" onclick="cerrarFormCliente()">Cancelar</button>
+                    </div>
+                    <div id="cli-mensaje" style="margin-top:8px;font-size:12px;display:none"></div>
+                </div>
+
+                <!-- Tabla clientes -->
+                <div class="panel">
+                    <div class="order-row header-row" style="grid-template-columns: 1.5fr 1.5fr 1fr 0.8fr 0.8fr">
+                        <span>Nombre / NIT</span>
+                        <span>Correo</span>
+                        <span>Teléfono</span>
+                        <span>Pedidos</span>
+                        <span>Total compras</span>
+                    </div>
+                    <div id="tabla-clientes">
+                        <p style="font-size:13px;color:var(--text2);padding:8px 0">Cargando clientes...</p>
+                    </div>
+                </div>
             </div>
 
             <!-- ── PROVEEDORES ── -->
@@ -273,9 +327,7 @@
 
         </main>
     </div>
-
-    <script src="../js/auth.js"></script>
-    <script src="../js/app.js"></script>
+    <script type="module" src="../js/app.js"></script>
 </body>
 
 </html>

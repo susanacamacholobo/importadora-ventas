@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.routers import proveedores, productos, analisis
+from app.routers import proveedores, productos, analisis, clientes
 import os
 
 load_dotenv()
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(proveedores.router)
 app.include_router(productos.router)
 app.include_router(analisis.router)
+app.include_router(clientes.router)
 
 @app.get("/")
 def root():
