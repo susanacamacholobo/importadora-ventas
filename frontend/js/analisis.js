@@ -55,8 +55,8 @@ export async function cargarAnalisis(API_URL) {
     document.getElementById('tabla-criticos').innerHTML = crits.length === 0
       ? '<p style="font-size:13px;color:var(--text2);padding:8px 0">No hay productos en stock crítico.</p>'
       : crits.map(p => `
-          <div class="order-row">
-            <span style="font-size:12px">${p.nombre.substring(0, 40)}${p.nombre.length > 40 ? '...' : ''}</span>
+          <div class="order-row" style="grid-template-columns:2fr 1fr 1fr 0.5fr">
+            <span style="font-size:12px">${p.nombre.substring(0,40)}${p.nombre.length > 40 ? '...' : ''}</span>
             <span style="font-size:12px">${p.categoria || 'Sin cat.'}</span>
             <span style="font-size:12px">${p.proveedor || '—'}</span>
             <span class="status ${p.stock_total === 0 ? 's-pendiente' : 's-enviado'}">${p.stock_total} u.</span>

@@ -28,7 +28,7 @@ export function renderProveedores(list) {
   document.getElementById('tabla-proveedores').innerHTML = list.length === 0
     ? '<p style="font-size:13px;color:var(--text2);padding:8px 0">No se encontraron proveedores.</p>'
     : list.map(p => `
-        <div class="order-row" style="cursor:pointer" onclick="verProductosProveedor(${p.id}, '${p.nombre}')">
+        <div class="order-row" style="grid-template-columns:1.5fr 0.8fr 0.8fr 0.3fr" ...>
           <span><b>${p.nombre}</b>${p.nombre_corto ? '<br><span style="font-size:10px;color:var(--text2)">'+p.nombre_corto+'</span>' : ''}</span>
           <span style="font-size:12px">${p.tipo}</span>
           <span style="font-size:12px">${p.num_productos} productos</span>
